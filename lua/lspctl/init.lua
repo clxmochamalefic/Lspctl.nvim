@@ -1,5 +1,16 @@
 ---@diagnostic disable: undefined-global
-local M = {}
+local default_config = require("lspctl.keymap")
+local actions = require("lspctl.actions")
+
+local plugin_name = "lspctl"
+
+---table
+---@class lspctl
+---@field config lspctl_config
+local M = {
+  config = default_config,
+  actions = actions,
+}
 
 ---lspclient object definition
 ---@class lspclient
@@ -10,12 +21,34 @@ local M = {}
 ---@field filetypes string
 ---@field initialization_options string
 ---@field attached string
----
 
-M.setup = function()
+---
+---init - initialize
+---
+---@param opt lspctl_config|nil
+---
+--local function init(opt)
+--  opt = (opt ~= nil and opt ~= {}) and opt or default_config
+--  --local augroup = vim.api.nvim_create_augroup("Lspctl", { clear = true })
+--  --vim.api.nvim_create_autocmd("FileType", {
+--  --  group = augroup,
+--  --  pattern = { "lspctl", },
+--  --  callback = function()
+--  --    vim.keymap.set("n", opt.info, "</<C-x><C-o>", { noremap = true, silent = true, buffer = true })
+--  --  end,
+--  --})
+--end
+
+---
+---setup - setup with initialize
+---
+---@param opt lspctl_config|nil
+---
+M.setup = function(opt)
   vim.api.nvim_create_user_command('Lspctl', function()
     M.run();
   end, {})
+  --init(opt)
 end
 
 M.run = function()
@@ -31,8 +64,8 @@ end
 M.render = function(clients)
   local Popup = require("nui.popup")
   local Layout = require("nui.layout")
-  local Menu = require("nui.menu")
-  local event = require("nui.utils.autocmd").event
+  local EM = require("lspctl.ext.menu")
+  --local event = require("nui.utils.autocmd").event
 
   local popup_head = Popup({
     border = {
@@ -41,15 +74,16 @@ M.render = function(clients)
   })
 
   local lines = {}
-  for i, v in pairs(clients) do
-    table.insert(lines, Menu.item(v.name, { id = v.id, attached = v.attached }))
+  for _, v in pairs(clients) do
+    local m = EM.item(v.name, { id = v.id, attached = v.attached })
+    table.insert(lines, m)
   end
 
   if #lines < 1 then
-    table.insert(lines, Menu.item("No Lsp"))
+    table.insert(lines, EM.item("No Lsp"))
   end
 
-  local menu = Menu({
+  local menu_options = {
     position = "50%",
     size = {
       width = 25,
@@ -58,14 +92,18 @@ M.render = function(clients)
     border = {
       style = "single",
       text = {
-        top = "[Lsp Info and Wrapper]",
+        top = "[LspController]",
         top_align = "center",
       },
     },
     win_options = {
       winhighlight = "Normal:Normal,FloatBorder:Normal",
     },
-  }, {
+    keymap = {
+    },
+  }
+
+  local menu = EM(menu_options, {
     lines = lines,
     on_close = function()
       print("Menu Closed!")
@@ -74,6 +112,16 @@ M.render = function(clients)
       print("Menu Submitted: ", item.text)
     end,
   })
+
+  --menu:map("n", { M.config.start }, actions.start, { c = clients })
+  --menu:map("n", { M.config.stop }, actions.stop, { c = clients })
+  --menu:map("n", { M.config.restart }, actions.restart, { c = clients })
+  M.actions.clients = clients
+  menu:map("n", M.config.start, M.actions.start, {})
+  menu:map("n", M.config.stop, M.actions.stop, {})
+  menu:map("n", M.config.restart, M.actions.restart, {})
+
+
   local popup_body = Popup({
     enter = true,
     focusable = true,
@@ -105,7 +153,9 @@ M.render = function(clients)
     Layout.Box({
       Layout.Box(popup_head, { size = "10%" }),
       Layout.Box(menu, { size = "90%" }),
-    }, { dir = "col" })
+    }, {
+      dir = "col",
+    })
   )
 
   popup_body:map("n", "q", function()
@@ -114,7 +164,8 @@ M.render = function(clients)
   end, {})
   layout:mount()
 
-  local bufnr = vim.api.nvim_get_current_buf()
+  local gb = vim.api.nvim_get_current_buf()
+  vim.api.nvim_set_option_value("filetype", plugin_name, { buf = gb })
 end
 
 ---
@@ -139,7 +190,8 @@ M.get_clients = function()
       initialization_options = client.initialization_options,
       attached = is_attached,
     }
-    table.insert(all_clients, c)
+    --table.insert(all_clients, c)
+    all_clients[client.name] = c
   end
 
   return all_clients
