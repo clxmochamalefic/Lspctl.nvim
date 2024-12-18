@@ -2,7 +2,6 @@ local util = require('lspctl.lsp.util')
 
 local M = {
   clients = nil,
-  categories = {},
 
   lspconfig = require('lspctl.lsp.lspconfig'),
   mason = require('lspctl.lsp.mason'),
@@ -33,7 +32,7 @@ M.get_all_clients = function(opt)
   end
 
   -- update active servers / アクティブなサーバーを更新
-  local active_clients = util.get_clients()
+  local active_clients = util.get_clients(M.clients)
   for name, client in pairs(active_clients) do
     local categories = M.clients[name]
     client.categories = categories
