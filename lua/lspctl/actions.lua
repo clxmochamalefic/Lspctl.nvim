@@ -1,18 +1,32 @@
 ---@diagnostic disable: undefined-global
 local M = {
-  clients = {}
+  clients = {},
+  bufnr = nil,
 }
 
 local function get_name()
-  return vim.fn["getline"](".")
+  local line = vim.fn["getline"](".")
+
+  local pos_first = string.find(line, "]", 0, true) or 0
+  local pos_last = string.find(line, "(", 0, true) or 0
+
+  local subs = string.sub(line, pos_first + 1, pos_last - 1)
+  return string.gsub(subs, "%s+", "")
 end
 
 function M:start()
   local name = get_name()
-  if M.clients[name] then
+  local client = M.clients[name]
+  if client then
     vim.print("[lspctl]start: " .. name)
-    vim.lsp.start_client(name)
+    local config = {
+      name = name,
+      cmd = client.cmd,
+      root_dir = client.root_dir,
+    }
+    vim.lsp.start(config, { bufnr = M.bufnr })
   end
+  M.bufnr = nil
 end
 
 function M:stop()
@@ -22,6 +36,7 @@ function M:stop()
     vim.print("[lspctl]stop: " .. name)
     vim.lsp.stop_client(client.id)
   end
+  M.bufnr = nil
 end
 
 function M:restart()
@@ -30,8 +45,15 @@ function M:restart()
   local client = M.clients[name]
   if client then
     vim.lsp.stop_client(client.id)
+    --vim.lsp.start_client(name)
+    local config = {
+      name = name,
+      cmd = client.cmd,
+      root_dir = client.root_dir,
+    }
+    vim.lsp.start(config, { bufnr = M.bufnr })
   end
-  vim.lsp.start_client(name)
+  M.bufnr = nil
 end
 
 return M

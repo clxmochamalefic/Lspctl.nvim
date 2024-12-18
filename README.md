@@ -9,7 +9,7 @@ you
 `lspctl` は `LspInfo` を `floating window` を利用して表示するプラグインです
 
 Also, you can `start`, `stop`, `restart` for the displayed plugin
-また、表示しているプラグインに対して `start`, `stop`, `restart を行うことができます
+また、表示しているプラグインに対して `start`, `stop`, `restart` を行うことができます
 
 ## VERSIONS - バージョニング
 
@@ -71,8 +71,6 @@ Also, you can `start`, `stop`, `restart` for the displayed plugin
 
 1. `:Lspctl` to open lspctl window
 2. the window is display that running LSP server name
-  - TODO: in time, `lspctl` is only show active LSP server name
-    that is unimplemented, I will fix it to show all installed LSP server name
 3. you can use `j` or `k` to move cursor and select LSP server
 4. and you can execute an action if press to configured binded key
    (see also => `:help lspctl-interface-key-bindings`)
@@ -81,8 +79,6 @@ Also, you can `start`, `stop`, `restart` for the displayed plugin
 
 1. `:Lspctl` で lspctl のウィンドウを開きます
 2. `lspctl` のウィンドウに起動中のLSPサーバ名が表示されます
-  - TODO: 現状は現在アクティブなバッファのLSPサーバ名のみ表示されます
-    これは未実装箇所で、インストール済みのLSPサーバ名のすべてを表示するように修正予定です
 3. `j` / `k` でカーソル移動を実施し、任意のLSPサーバを選択します
 4. キーバインドで設定しているキーを押すことで、
    選択したLSPサーバに対してアクションを実行します
