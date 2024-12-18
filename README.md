@@ -4,6 +4,8 @@
 
 > a simple list for lsp client provided by [nui.nvim](https://github.com/MunifTanjim/nui.nvim)
 
+https://github.com/user-attachments/assets/e59844bd-8054-4737-86e3-c426b49de14a
+
 `lspctl` is show `floating window` sourced by `LspInfo` and provide related actions for
 you
 `lspctl` は `LspInfo` を `floating window` を利用して表示するプラグインです
