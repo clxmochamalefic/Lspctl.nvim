@@ -10,10 +10,8 @@ local function get_mason_category_map()
   local installed_packages = registry.get_installed_packages()
 
   local packages = {}
-  for _, fullname in ipairs(installed_packages) do
-    --packages[name] = util.get_init_client(name)
-    --packages[name].categories = package.categories
-    packages[fullname] = package.categories
+  for _, package in ipairs(installed_packages) do
+    packages[package.name] = package.categories
   end
 
   return packages
@@ -26,12 +24,12 @@ end
 --- @return lspclient[] lspclient object definition list
 ---
 return function()
-  local success, malspconfig = pcall(require, 'mason-lspconfig')
-  if not success then
+  local s1, malspconfig = pcall(require, 'mason-lspconfig')
+  if not s1 then
     return {}
   end
-  local success, lspconfig = pcall(require, 'lspconfig')
-  if not success then
+  local s2, lspconfig = pcall(require, 'lspconfig')
+  if not s2 then
     return {}
   end
 
@@ -44,16 +42,18 @@ return function()
   for _, name in ipairs(installed_servers) do
     --local attached_buffer = client.attached_buffers[bn]
     local fullname = lsp_name_mapping[name]
-    local client = util.get_init_client(name)
     local default_config = lspconfig[name].config_def.default_config
-
-    client.cmd = default_config.cmd
-    client.root_dir = default_config.root_dir()
-    client.categories = packages[fullname]
-    installed_servers[name] = client
+    local client = util.get_init_client(
+      name,
+      fullname,
+      default_config.cmd,
+      default_config.root_dir(),
+      packages[fullname]
+    )
+    servers[name] = client
     --vim.print("name: " .. name)
     --vim.print(default_config)
   end
 
-  return installed_servers
+  return servers
 end

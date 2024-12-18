@@ -7,12 +7,13 @@ local M = {}
 ---@class lspclient lspclient object definition
 ---@field id integer
 ---@field name string
+---@field fullname string
 ---@field version string
 ---@field offset_encoding string
 ---@field filetypes string
 ---@field initialization_options string
 ---@field categories lspcategory[]
----@field cmd string
+---@field cmd table
 ---@field root_dir string
 ---@field attached string
 
@@ -23,20 +24,23 @@ local M = {}
 ---
 --- @return lspclient lspclient object definition list
 ---
-M.get_init_client = function(name, cmd, root_dir)
+M.get_init_client = function(name, fullname, cmd, root_dir, categories)
   name = name or ""
+  fullname = fullname or ""
   cmd = cmd or ""
   root_dir = root_dir or ""
+  categories = categories or {}
   return {
     cid = 0,
     name = name,
+    fullname = fullname,
     cmd = cmd,
     root_dir = root_dir,
     version = "",
     offset_encoding = "",
     filetypes = "",
     initialization_options = "",
-    categories = {},
+    categories = categories,
     attached = false,
   }
 end

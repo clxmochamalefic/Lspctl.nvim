@@ -16,11 +16,9 @@ return function()
   -- インストール済みLSPの一覧を取得する
   local installed_servers = {}
   for name, conf in pairs(lspconfig) do
-    --local attached_buffer = client.attached_buffers[bn]
-    local x = util.get_init_client(name)
-    x.cmd = conf.cmd
-    x.root_dir = conf.config_def.default_config.root_dir()
-    installed_servers[name] = x
+    local default_config = conf.config_def.default_config
+    local client = util.get_init_client(name, name, default_config.cmd, default_config.root_dir())
+    installed_servers[name] = client
   end
 
   return installed_servers

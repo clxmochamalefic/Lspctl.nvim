@@ -86,9 +86,18 @@ components.get_menu_item_list = function(clients)
     local id = NuiText(idstr, "Normal")
 
     local name = NuiText(v.name or "", "Title")
-    local attached = NuiText(v.attached and " (attached)" or " (detached)", "Comment")
-    local line = NuiLine({ id, name, attached })
 
+    local fullnamestr = v.fullname and " (" .. v.fullname .. ") " or ""
+    local fullname = NuiText(fullnamestr, "Title")
+
+    local attached = NuiText(v.attached and " (attached)" or " (detached)", "Comment")
+
+    local categories = NuiText("", "Comment")
+    if v.categories and #v.categories > 0 then
+      categories = NuiText(" { " .. table.concat(v.categories, ", ") .. " }", "Comment")
+    end
+
+    local line = NuiLine({ id, name, fullname, attached, categories })
     local m = EM.item(line, { attached = v.attached })
     table.insert(lines, m)
   end
