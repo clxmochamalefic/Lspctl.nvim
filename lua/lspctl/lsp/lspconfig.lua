@@ -5,7 +5,7 @@ local util = require('lspctl.lsp.util')
 --- get all installed LSP servers
 --- インストール済みのLSPサーバーを取得
 ---
---- @return lsptuple lspclient object definition list
+--- @return lspclient[] lspclient object definition list
 ---
 return function()
   local success, lspconfig = pcall(require, 'lspconfig')
@@ -17,11 +17,11 @@ return function()
   local installed_servers = {}
   for name, conf in pairs(lspconfig) do
     --local attached_buffer = client.attached_buffers[bn]
-    installed_servers[name] = util.get_init_client(name)
+    local x = util.get_init_client(name)
+    x.cmd = conf.cmd
+    x.root_dir = conf.config_def.default_config.root_dir()
+    installed_servers[name] = x
   end
 
-  return {
-    clients = installed_servers,
-    categories = {},
-  }
+  return installed_servers
 end

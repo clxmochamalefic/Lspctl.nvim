@@ -11,11 +11,10 @@ local M = {}
 ---@field offset_encoding string
 ---@field filetypes string
 ---@field initialization_options string
----@field attached string
-
----@class lsptuple lsp client and lsp-category object tuple
----@field clients lspclient[]
 ---@field categories lspcategory[]
+---@field cmd string
+---@field root_dir string
+---@field attached string
 
 ---
 --- get_init_client - クライアントの初期状態オブジェクトを取得
@@ -24,15 +23,20 @@ local M = {}
 ---
 --- @return lspclient lspclient object definition list
 ---
-M.get_init_client = function(name)
+M.get_init_client = function(name, cmd, root_dir)
   name = name or ""
+  cmd = cmd or ""
+  root_dir = root_dir or ""
   return {
     cid = 0,
     name = name,
+    cmd = cmd,
+    root_dir = root_dir,
     version = "",
     offset_encoding = "",
     filetypes = "",
     initialization_options = "",
+    categories = {},
     attached = false,
   }
 end

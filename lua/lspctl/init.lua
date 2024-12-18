@@ -1,7 +1,10 @@
 ---@diagnostic disable: undefined-global
 local NuiText = require("nui.text")
+local NuiLine = require("nui.line")
 local NuiPopup = require("nui.popup")
 local NuiLayout = require("nui.layout")
+local NuiMenu = require("nui.menu")
+
 local EM = require("lspctl.ext.menu")
 
 local default_keymap = require("lspctl.config.keymap")
@@ -79,7 +82,14 @@ end
 components.get_menu_item_list = function(clients)
   local lines = {}
   for _, v in pairs(clients) do
-    local m = EM.item(v.name, { attached = v.attached })
+    local idstr = v.id and "[id: " .. v.id .. "] " or "[id: -] "
+    local id = NuiText(idstr, "Normal")
+
+    local name = NuiText(v.name or "", "Title")
+    local attached = NuiText(v.attached and " (attached)" or " (detached)", "Comment")
+    local line = NuiLine({ id, name, attached })
+
+    local m = EM.item(line, { attached = v.attached })
     table.insert(lines, m)
   end
 
@@ -147,21 +157,34 @@ M.get_action_help_text = function()
       " / quit: <ESC> or " .. M.keymap.close
 end
 
+M.reconfigure = function()
+  if components.header_popup then
+    vim.api.nvim_buf_set_lines(components.header_popup.bufnr, 0, 1, false, { M.get_action_help_text() })
+  end
+
+  local gb = vim.api.nvim_get_current_buf()
+
+  local opt = { buffer = gb }
+  components.menu:map("n", M.keymap.start, M.actions.start, opt)
+  components.menu:map("n", M.keymap.stop, M.actions.stop, opt)
+  components.menu:map("n", M.keymap.restart, M.actions.restart, opt)
+end
+
 ---
 ---render - 描画
 ---
 ---@param clients lspclient[]
 ---
 M.render = function(clients)
+  M.actions.bufnr = vim.api.nvim_get_current_buf()
+  M.actions.clients = clients
+  --vim.print(clients)
   if components.layout then
     components.layout:show()
-    if components.header_popup then
-      vim.api.nvim_buf_set_lines(components.header_popup.bufnr, 0, 1, false, { M.get_action_help_text() })
-    end
+    M.reconfigure()
     return
   end
 
-  M.actions.clients = clients
   local lines = components.get_menu_item_list(clients)
   local menu_box = components.get_menu(lines)
   local header_box = components.get_header()
@@ -177,7 +200,7 @@ M.render = function(clients)
     {
       position = "50%",
       size = {
-        width = "60%",
+        width = "80%",
         height = "50%",
       },
     },
@@ -185,19 +208,8 @@ M.render = function(clients)
   )
 
   components.layout:mount()
-
-  -- put header text
-  if components.header_popup then
-    vim.api.nvim_buf_set_lines(components.header_popup.bufnr, 0, 1, false, { M.get_action_help_text() })
-  end
-
-  local gb = vim.api.nvim_get_current_buf()
   vim.api.nvim_set_option_value("filetype", plugin_name, { buf = gb })
-
-  local opt = { buffer = gb }
-  components.menu:map("n", M.keymap.start, M.actions.start, opt)
-  components.menu:map("n", M.keymap.stop, M.actions.stop, opt)
-  components.menu:map("n", M.keymap.restart, M.actions.restart, opt)
+  M.reconfigure()
 end
 
 return M
