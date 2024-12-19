@@ -30,7 +30,7 @@ License : MIT license  {{{
 概要(introduction)				|lspctl-introduction|
 インストール(installation)			|lspctl-installation|
 	最小構成(VANILLA)			|lspctl-installation-vanilla|
-	キーバインド(UI keybind)		|lspctl-installation-keybind|
+	いろいろ設定例(with options)		|lspctl-installation-options|
 使い方(usage/how-to-use)			|lspctl-usage|
 	日本語(ja_jp)				|lspctl-usage-ja_jp|
 	英語(en_us)				|lspctl-usage-en_us|
@@ -85,29 +85,37 @@ EXAMPLE: VANILLA with lazy.nvim / 最小構成
 <
 
 ------------------------------------------------------------------------------
-キーバインド(UI keybind)			*lspctl-installation-keybind*
+いろいろ設定例(with options)			*lspctl-installation-options*
 
-EXAMPLE: UI keybind preference with lazy.nvim / UIでのkeybind設定付き
+EXAMPLE: with options / オプション設定例
 
 >
   {
     "clxmochamalefic/lspctl.nvim"
     dependencies = {
       "MunifTanjim/nui.nvim",
+      -- if u use lspconfig, write below / lspconfig を使っている場合はこちらを入れてください
+      "neovim/nvim-lspconfig",
+      -- if u use mason, write below / mason を使っている場合はこちらを入れてください
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
     },
     lazy = true,
     cmd = { "Lspctl", },
-    opt = {
+    opts = {
       -- this binds are default, you can change it
       -- ここの設定はデフォルトですから、ご自由に変更してください
-      info = "h",
-      start = "s",
-      stop = "x",
-      restart = "r",
-      close = "q",
+      manager = "mason", -- default: "lspconfig", support: "lspconfig"|"mason"
+      keymap = {
+        info = "h",
+        start = "s",
+        stop = "x",
+        restart = "r",
+        close = "q",
+      },
     },
-    config = function(_, opt)
-      require("lspctl").setup(opt)
+    config = function(_, opts)
+      require("lspctl").setup(opts)
     end,
   },
 <

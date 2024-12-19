@@ -6,11 +6,12 @@
 
 <https://github.com/user-attachments/assets/e59844bd-8054-4737-86e3-c426b49de14a>
 
-`lspctl` is show `floating window` sourced by `LspInfo` and provide related actions for
-you
+`lspctl` is show `floating window` sourced by `LspInfo` and provide related actions for you
+
 `lspctl` は `LspInfo` を `floating window` を利用して表示するプラグインです
 
 Also, you can `start`, `stop`, `restart` for the displayed plugin
+
 また、表示しているプラグインに対して `start`, `stop`, `restart` を行うことができます
 
 ## VERSIONS - バージョニング
@@ -23,8 +24,9 @@ Also, you can `start`, `stop`, `restart` for the displayed plugin
 ## HOW TO INSTALLATION - インストール方法
 
 > [!NOTE]
-> all examples are written in |lazy.nvim|
-> 以下の例はすべて |lazy.nvim| で書かれています
+> all examples are written in `lazy.nvim`
+>
+> 以下の例はすべて `lazy.nvim` で書かれています
 
 ### VANILLA - 最小構成
 
@@ -42,27 +44,35 @@ Also, you can `start`, `stop`, `restart` for the displayed plugin
   },
 ```
 
-### with KEYBIND - キーバインドあり
+### with options - いろいろ設定例
 
 ```lua
   {
     "clxmochamalefic/lspctl.nvim"
     dependencies = {
       "MunifTanjim/nui.nvim",
+      -- if u use lspconfig, write below / lspconfigを使っている場合はこちらを入れてください
+      "neovim/nvim-lspconfig",
+      -- if u use mason, write below / masonを使っている場合はこちらを入れてください
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
     },
     lazy = true,
     cmd = { "Lspctl", },
-    opt = {
+    opts = {
       -- this binds are default, you can change it
       -- ここの設定はデフォルトですから、ご自由に変更してください
-      info = "h",
-      start = "s",
-      stop = "x",
-      restart = "r",
-      close = "q",
+      manager = "mason", -- default: "lspconfig", support: "lspconfig"|"mason"
+      keymap = {
+        info = "h",
+        start = "s",
+        stop = "x",
+        restart = "r",
+        close = "q",
+      },
     },
-    config = function(_, opt)
-      require("lspctl").setup(opt)
+    config = function(_, opts)
+      require("lspctl").setup(opts)
     end,
   },
 ```
@@ -92,22 +102,26 @@ Also, you can `start`, `stop`, `restart` for the displayed plugin
 
 #### :Lspctl
 
-show |lspctl| ui window
-|lspctl| のウィンドウを表示します
+show `lspctl` ui window
+
+`lspctl` のウィンドウを表示します
 
 ### ACTIONS - アクション
 
 #### start
 
 start selected LSP server
+
 選択した LSP server を起動します
 
 #### stop
 
 stop selected LSP server
+
 選択した LSP server を終了します
 
 #### restart
 
 restart selected LSP server
+
 選択した LSP server を再起動します
