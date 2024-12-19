@@ -4,7 +4,7 @@
 
 > a simple list for lsp client provided by [nui.nvim](https://github.com/MunifTanjim/nui.nvim)
 
-https://github.com/user-attachments/assets/e59844bd-8054-4737-86e3-c426b49de14a
+<https://github.com/user-attachments/assets/e59844bd-8054-4737-86e3-c426b49de14a>
 
 `lspctl` is show `floating window` sourced by `LspInfo` and provide related actions for
 you
@@ -16,7 +16,7 @@ Also, you can `start`, `stop`, `restart` for the displayed plugin
 ## VERSIONS - バージョニング
 
 - feature / 最新版:
-  - https://github.com/clxmochamalefic/lspctl.nvim
+  - <https://github.com/clxmochamalefic/lspctl.nvim>
 - stable / 安定版:
   - nothing yet / まだありません
 

@@ -14,7 +14,7 @@ local function get_name()
   return string.gsub(subs, "%s+", "")
 end
 
-function M:start()
+M.start = function()
   local name = get_name()
   local client = M.clients[name]
   if client then
@@ -29,7 +29,7 @@ function M:start()
   M.bufnr = nil
 end
 
-function M:stop()
+M.stop = function()
   local name = get_name()
   local client = M.clients[name]
   if client then
@@ -39,9 +39,9 @@ function M:stop()
   M.bufnr = nil
 end
 
-function M:restart()
-  vim.print("[lspctl]restart: " .. name)
+M.restart = function()
   local name = get_name()
+  vim.print("[lspctl]restart: " .. name)
   local client = M.clients[name]
   if client then
     vim.lsp.stop_client(client.id)
