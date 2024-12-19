@@ -3,7 +3,6 @@ local NuiText = require("nui.text")
 local NuiLine = require("nui.line")
 local NuiPopup = require("nui.popup")
 local NuiLayout = require("nui.layout")
-local NuiMenu = require("nui.menu")
 
 local EM = require("lspctl.ext.menu")
 
@@ -217,6 +216,7 @@ M.render = function(clients)
   )
 
   components.layout:mount()
+  local gb = vim.api.nvim_get_current_buf()
   vim.api.nvim_set_option_value("filetype", plugin_name, { buf = gb })
   M.reconfigure()
 end
