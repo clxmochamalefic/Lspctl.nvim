@@ -1,6 +1,8 @@
 *lspctl.txt*    en_us/ja_jp HELP
 
-Version : 0.0.1
+Version : 0.0.2
+Date    : 2024/12/19
+Origin  : 2024/12/17
 Author  : Nao Akakura <@clxmochamalefic>
 License : MIT license  {{{
     Permission is hereby granted, free of charge, to any person obtaining
@@ -23,32 +25,32 @@ License : MIT license  {{{
 }}}
 
 ==============================================================================
-目次                        *lspctl-contents*
+目次                        			*lspctl-contents*
 
-概要(introduction)			|lspctl-introduction|
-インストール(installation)		|lspctl-installation|
+概要(introduction)				|lspctl-introduction|
+インストール(installation)			|lspctl-installation|
 	最小構成(VANILLA)			|lspctl-installation-vanilla|
-	キーバインド(UI keybind)		|lspctl-installation-keybind|
-使い方(usage/how-to-use)		|lspctl-usage|
+	いろいろ設定例(with options)		|lspctl-installation-options|
+使い方(usage/how-to-use)			|lspctl-usage|
 	日本語(ja_jp)				|lspctl-usage-ja_jp|
 	英語(en_us)				|lspctl-usage-en_us|
-インターフェイス(interface)		|lspctl-interface|
+インターフェイス(interface)			|lspctl-interface|
 	コマンド(commands)			|lspctl-interface-commands|
 	アクション(actions)			|lspctl-interface-actions|
-TODO					|lspctl-todo|
-更新履歴				|lspctl-changelog|
+TODO						|lspctl-todo|
+更新履歴(changelog)				|lspctl-changelog|
 
 
 ==============================================================================
-概要                        *lspctl-introduction*
+概要                        			*lspctl-introduction*
 
 >
   a simple list for lsp client provided by [nui.nvim](https://github.com/MunifTanjim/nui.nvim)
 <
 
-*lspctl* is show `floating window` sourced by `LspInfo` and provide related actions for
+|lspctl| is show `floating window` sourced by `LspInfo` and provide related actions for
 you
-*lspctl* は `LspInfo` を `floating window` を利用して表示するプラグインです
+|lspctl| は `LspInfo` を `floating window` を利用して表示するプラグインです
 
 Also, you can `start`, `stop`, `restart` for the displayed plugin
 また、表示しているプラグインに対して `start`, `stop`, `restart` を行うことができます
@@ -83,29 +85,37 @@ EXAMPLE: VANILLA with lazy.nvim / 最小構成
 <
 
 ------------------------------------------------------------------------------
-キーバインド(UI keybind)			*lspctl-installation-keybind*
+いろいろ設定例(with options)			*lspctl-installation-options*
 
-EXAMPLE: UI keybind preference with lazy.nvim / UIでのkeybind設定付き
+EXAMPLE: with options / オプション設定例
 
 >
   {
     "clxmochamalefic/lspctl.nvim"
     dependencies = {
       "MunifTanjim/nui.nvim",
+      -- if u use lspconfig, write below / lspconfig を使っている場合はこちらを入れてください
+      "neovim/nvim-lspconfig",
+      -- if u use mason, write below / mason を使っている場合はこちらを入れてください
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
     },
     lazy = true,
     cmd = { "Lspctl", },
-    opt = {
+    opts = {
       -- this binds are default, you can change it
       -- ここの設定はデフォルトですから、ご自由に変更してください
-      info = "h",
-      start = "s",
-      stop = "x",
-      restart = "r",
-      close = "q",
+      manager = "mason", -- default: "lspconfig", support: "lspconfig"|"mason"
+      keymap = {
+        info = "h",
+        start = "s",
+        stop = "x",
+        restart = "r",
+        close = "q",
+      },
     },
-    config = function(_, opt)
-      require("lspctl").setup(opt)
+    config = function(_, opts)
+      require("lspctl").setup(opts)
     end,
   },
 <
@@ -115,7 +125,7 @@ EXAMPLE: UI keybind preference with lazy.nvim / UIでのkeybind設定付き
 
 ------------------------------------------------------------------------------
 英語(en_us)					*lspctl-usage-en_us*
-1. `:Lspctl` to open lspctl window
+1. |:Lspctl| to open lspctl window
 2. the window is display that running LSP server name
 3. you can use `j` or `k` to move cursor and select LSP server
 4. and you can execute an action if press to configured binded key
@@ -123,7 +133,7 @@ EXAMPLE: UI keybind preference with lazy.nvim / UIでのkeybind設定付き
 
 ------------------------------------------------------------------------------
 日本語(ja_jp)					*lspctl-usage-ja_jp*
-1. `:Lspctl` で lspctl のウィンドウを開きます
+1. |:Lspctl| で lspctl のウィンドウを開きます
 2. `lspctl` のウィンドウに起動中のLSPサーバ名が表示されます
 3. `j` / `k` でカーソル移動を実施し、任意のLSPサーバを選択します
 4. キーバインドで設定しているキーを押すことで、
@@ -159,14 +169,17 @@ restart						*actions.restart*
 ==============================================================================
 TODO						*lspctl-todo*
 
-1. NON-ACTIVE LSP server name display
-2. LSP server status display
-3. LSP server action display
+1. LSP server status display
 
 ==============================================================================
-更新履歴					*lspctl-changelog*
+更新履歴(changelog)				*lspctl-changelog*
 
-v0.0.1: minimal feature
+v0.0.2: minimal feature (released: 2024/12/19)
+	- implemented piece of TODO: NON-ACTIVE LSP server name display
+	- implemented piece of TODO: LSP server action display
+	    - get non-active lsp server name from `lspconfig` and `mason`
+	- fixed: donot work any actions ...
+v0.0.1: minimal feature (released: 2024/12/17)
 	- implemented ui open and close behavior
 	- implemented action of start, stop, restart LSP server
 
